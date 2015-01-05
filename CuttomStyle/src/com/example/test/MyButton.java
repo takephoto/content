@@ -1,0 +1,49 @@
+package com.example.test;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.graphics.RectF;
+import android.view.MotionEvent;
+import android.view.View;
+
+public class MyButton extends View {
+	public SosButton sos ;
+	
+	public MyButton(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stu
+		sos = new SosButton(new RectF(10f,10f,200f,80f)) ;
+	}
+	
+	@Override
+	protected void onDraw(Canvas canvas) {
+		// TODO Auto-generated method stub
+		super.onDraw(canvas);
+		Paint p = new Paint() ;
+		if(!sos.getIsClick()){
+			canvas.drawRect(sos.getFrame(),p) ;	
+		}else{
+			p.setColor(Color.RED) ;
+			p.setStyle(Style.STROKE) ;
+			canvas.drawRect(sos.getFrame(),p) ;
+		}
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		// TODO Auto-generated method stub
+		sos.touch(event) ;
+		this.postInvalidate() ;
+		return super.onTouchEvent(event);
+	}
+	
+	public void setListener(SosButton.Listener listener){
+		sos.setListener(listener) ;
+	}
+	
+	
+	
+}

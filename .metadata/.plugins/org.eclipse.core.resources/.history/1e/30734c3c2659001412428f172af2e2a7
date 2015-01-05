@@ -1,0 +1,27 @@
+package com.yang.game;
+
+import java.util.Dictionary;
+
+import org.cocos2d.layers.CCScene;
+import org.cocos2d.nodes.CCDirector;
+import org.cocos2d.nodes.CCLabel;
+import org.cocos2d.nodes.CCLabel.TextAlignment;
+import org.cocos2d.types.CGSize;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+public class GameActivity extends Activity {
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		CCDirector direct = CCDirector.sharedDirector() ;
+		CCScene scene = CCScene.node() ;
+		CCLabel label = new CCLabel("nihao", CGSize.make(100, 100), TextAlignment.CENTER, "ssssssssssss", 21) ;
+		scene.addChild(child)
+		//direct.pushScene(scene) ;
+		direct.runWithScene(scene) ;
+		
+	}
+}

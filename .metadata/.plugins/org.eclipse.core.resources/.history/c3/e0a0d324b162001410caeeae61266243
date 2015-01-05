@@ -1,0 +1,13 @@
+package com.mediatek.launcher2.ext;
+
+import android.util.Log;
+
+public class LauncherLog {
+	public static final Boolean DEBUG_KEY = true ;
+	public static final Boolean DEBUG = true ;
+	public static final Boolean DEBUG_UNREAD = true ;
+	
+	public static void d(String tag,String msg){
+		Log.d(tag, msg) ;
+	}
+}

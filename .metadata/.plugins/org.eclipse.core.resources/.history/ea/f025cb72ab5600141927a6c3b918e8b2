@@ -1,0 +1,82 @@
+package com.example.test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
+
+import com.example.bluedemo.R;
+
+
+public class MainActivity extends Activity {
+	
+	private BluetoothAdapter myBlueAdapter = null;
+	
+	private TextView blueToothInfo = null;
+	
+	private Spinner deviceNames = null ;
+	
+	private Switch openBlueTooth = null ;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main) ;
+		openBlueTooth = (Switch) findViewById(R.id.switch1) ;
+		deviceNames = (Spinner) findViewById(R.id.spinner1) ;
+		blueToothInfo = (TextView) findViewById(R.id.bluetooth_info) ;
+		myBlueAdapter = BluetoothAdapter.getDefaultAdapter() ;
+		if(myBlueAdapter.isEnabled()){
+			openBlueTooth.setChecked(true) ;
+		}else{
+			openBlueTooth.setChecked(false) ;
+		}
+		
+		openBlueTooth.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if(myBlueAdapter.isEnabled()){
+					myBlueAdapter.disable() ;
+				}else{
+					myBlueAdapter.enable() ;
+				}
+			}
+		}) ;
+		blueToothInfo.setText(getBlueDeviceAllInfo(myBlueAdapter)) ;
+		
+		Set<BluetoothDevice> bondDevices = myBlueAdapter.getBondedDevices() ;
+		
+		List<String> allBondDevNames = new ArrayList<String>() ;
+		for(BluetoothDevice devices : bondDevices){
+			allBondDevNames.add(devices.getName()) ;
+		}
+		deviceNames.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, allBondDevNames)) ; 
+	}
+	/*
+	 * 
+	 */
+	public String getBlueDeviceAllInfo(BluetoothAdapter blueAdapter){
+		StringBuilder info = new StringBuilder() ;
+		info.append("address:") ;
+		info.append(blueAdapter.getAddress()+"\n") ;
+		info.append("Name:") ;
+		info.append(blueAdapter.getName()+"\n") ;
+		info.append("scanMode:") ;
+		info.append(blueAdapter.getScanMode()+"\n") ;
+		info.append("state:") ;
+		info.append(blueAdapter.getState()+"\n") ;
+		return info.toString() ;	
+	}
+}

@@ -1,0 +1,25 @@
+package com.example.test;
+
+import org.cocos2d.nodes.CCDirector;
+import org.cocos2d.opengl.CCGLSurfaceView;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.widget.Toast;
+
+public class MainActivity extends Activity {
+	
+	MyButton mb ;
+	
+	CCDirector director ;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		CCGLSurfaceView gl = new CCGLSurfaceView(this) ;
+		
+		director = CCDirector.sharedDirector() ;
+		
+		director.attachInView(gl) ;
+	}
+}

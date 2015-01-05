@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="0dp"
+    android:orientation="vertical" >
+    <include layout="@layout/nagvration"
+        android:id="@+id/head"/>
+    <ListView 
+        android:id="@+id/list_alarm"
+        android:layout_below="@+id/head"
+        android:layout_above="@+id/new_clock"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/huise"
+        >
+        
+    </ListView>
+    
+    <Button
+        android:id="@+id/new_clock"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_margin="2dp"
+        android:layout_marginBottom="0dp"
+        android:background="@drawable/new_alarm"
+        android:layout_alignParentBottom="true"
+        android:drawablePadding="20dp"
+        
+        android:text="@string/new_alarm"
+       	
+       	android:textSize="9pt"
+       	android:textColor="#FFFFFF"
+        >
+    </Button>
+</RelativeLayout>

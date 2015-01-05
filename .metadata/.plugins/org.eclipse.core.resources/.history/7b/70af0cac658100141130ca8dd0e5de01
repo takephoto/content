@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:background="#FFFFFF"
+    
+    android:layout_height="wrap_content" >
+    <TextView 
+        android:id="@+id/weekday"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_margin="20dip"
+        android:textSize="12pt"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        
+        />
+
+    <CheckBox
+        android:id="@+id/rep_day_sel"
+        style="@style/CustomCheckboxTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/weekday"
+        android:layout_centerVertical="true"
+        android:layout_margin="20dip" />
+
+</RelativeLayout>

@@ -1,0 +1,23 @@
+package com.yang.game;
+
+import java.util.Dictionary;
+
+import org.cocos2d.layers.CCLayer;
+import org.cocos2d.layers.CCScene;
+import org.cocos2d.nodes.CCDirector;
+import org.cocos2d.nodes.CCLabel;
+import org.cocos2d.nodes.CCLabel.TextAlignment;
+import org.cocos2d.opengl.GLSurfaceView;
+import org.cocos2d.types.CGSize;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+public class GameActivity extends  Activity{
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		GLSurfaceView view = new GLSurfaceView(this) ;
+	}
+}

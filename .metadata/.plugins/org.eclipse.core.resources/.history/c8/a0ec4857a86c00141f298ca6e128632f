@@ -1,0 +1,41 @@
+package com.example.test;
+
+import android.graphics.RectF;
+import android.view.MotionEvent;
+
+public class SosButton {
+	
+	public Listener listener ;
+	
+	
+	public RectF frame ;
+	
+	
+	
+	public SosButton(RectF r){
+		this.frame = r ;
+	}
+	
+	
+	public RectF getFrame() {
+		return frame;
+	}
+
+
+	public void touch(MotionEvent event){
+		
+		if(listener != null){
+			frame.contains(event.getX(), event.getY()) ;
+		}
+	}
+	
+	
+	public void setListener(Listener listener) {
+		this.listener = listener;
+	}
+
+
+	public interface Listener{
+		public void click() ;
+	}
+}

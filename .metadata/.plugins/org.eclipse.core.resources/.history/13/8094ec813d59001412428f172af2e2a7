@@ -1,0 +1,34 @@
+package com.example.yang;
+
+import org.cocos2d.layers.CCScene;
+import org.cocos2d.nodes.CCDirector;
+
+import android.app.Activity;
+import android.opengl.GLSurfaceView;
+import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
+
+public class MainActivity extends Activity {
+	private GLSurfaceView view;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE) ;
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN) ;
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) ;
+		
+		view = new GLSurfaceView(this) ;
+		CCDirector direct = CCDirector.sharedDirector() ;
+		direct.setDeviceOrientation(CCDirector.kCCDeviceOrientationLandscapeLeft) ;
+		
+		direct.attachInView(view) ;
+		setContentView(view) ;
+		
+		CCDirector.sharedDirector().setDisplayFPS(true) ;
+		CCDirector.sharedDirector().setAnimationInterval(1.0f/30) ;
+		CCScene scene = CCScene.node() ;
+		CCDirector.sharedDirector().runWithScene(scene) ;
+	}
+}

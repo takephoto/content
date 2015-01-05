@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drirelativelayout"
+    android:layout_width="fill_parent"
+    android:layout_height="130dp"
+    android:background="@drawable/dribeijin" >
+
+    <Button
+        android:id="@+id/head_ring_distance"
+        android:layout_width="70dp"
+        android:layout_height="35dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:visibility="gone"
+        
+        android:background="@drawable/on" />
+    <ImageView
+        android:id="@+id/right_dir"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/head_ring_distance"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/more" />
+    <TextView
+        android:id="@+id/alarm_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="重复"
+       	android:layout_marginLeft="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:textColor="#525252"
+        android:textSize="12pt" />
+
+    <TextView
+        android:id="@+id/alarm_item_detail"
+        android:layout_below="@+id/alarm_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="周一"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"
+        android:textColor="#525252"
+        android:textSize="8pt" />
+    <CheckBox 
+        android:id="@+id/valite"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        style="@style/CustomSwitchTheme"
+        android:visibility="invisible"
+        />
+</RelativeLayout>

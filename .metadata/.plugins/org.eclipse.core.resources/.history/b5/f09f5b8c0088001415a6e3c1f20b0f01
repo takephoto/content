@@ -1,0 +1,36 @@
+package com.yang.deskclock;
+
+
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
+import android.widget.ListView;
+
+import com.example.csclock.R;
+
+public class DeskClock extends FragmentActivity {
+	
+	private ListView alarmList ;
+	
+	@Override
+	protected void onCreate(Bundle arg0) {
+		// TODO Auto-generated method stub
+		super.onCreate(arg0);
+		requestWindowFeature(Window.FEATURE_NO_TITLE) ;
+		setContentView(R.layout.desk_clock) ;
+		
+		
+		alarmList = (ListView) findViewById(R.id.list_alarm) ;
+		
+		initAlarmHeadView() ;
+		
+	}
+	
+	public void initAlarmHeadView(){
+		View v = LayoutInflater.from(this).inflate(R.layout.alarm_head, null) ;
+		alarmList.addHeaderView(v) ;
+	}
+	
+}

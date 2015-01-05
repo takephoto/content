@@ -1,0 +1,319 @@
+package com.android.deskclock;
+
+/*
+ * Copyright (C) 2007 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import kankan.wheel.R;
+import kankan.wheel.widget.NumericWheelAdapter;
+import kankan.wheel.widget.WheelView;
+
+
+
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceScreen;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.ActionMode;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import com.android.deskclock.provider.Alarm;
+import com.android.deskclock.provider.DaysOfWeek;
+
+
+public class AlarmClock extends PreferenceActivity implements
+		TimePickerDialog.OnTimeSetListener,
+		Preference.OnPreferenceChangeListener, View.OnClickListener, UpteMOdes {
+
+	// private EditTextPreference mLabel;
+	// private CheckBoxPreference mEnabledPref;
+	// private Preference mTimePref;
+	private AlarmPreference mAlarmPref;
+	// private CheckBoxPreference mVibratePref;
+	private RepeatPreference mRepeatPref;
+	private MenuItem mTestAlarmItem;   
+
+	private int mId;
+	private int mHour;
+	private int mMinutes;
+	private boolean mTimePickerCancelled;
+	private EditText mAlertName;
+	private ImageView mShowMsg;
+
+	private View mSetTime;
+	// 时间.
+	private TextView m_textHour, mMinute, showTimes;
+
+	private boolean intentAlert;
+
+	private Alarm alarm_intent = null;
+
+	private Dialog lDialog = null;
+
+	private Dialog lDialogs = null;
+
+	private RadioButton rb_3, rb_5, rb_10, rb_15, rb_30;
+	private View layout3,layout5,layout10,layout15,layout30;
+	private RadioButton rm_1, rm_2, rm_3, rm_4;
+
+	private ArrayList<RadioButton> mRadio = new ArrayList<RadioButton>();
+
+	private ArrayList<RadioButton> mRadioModes = new ArrayList<RadioButton>();
+
+	private RadioButton selectRadioButton;
+
+	private RadioButton seleteModeos;
+
+	private int SelectTime = 10;
+	 private static final int REQUEST_CODE_RINGTONE = 1;
+
+	private GridView mGrid;
+
+	private boolean bool = false;
+
+	private View mView;
+
+	private View mBottonView;
+
+	private boolean isVibrate;// 是否震动
+
+	private boolean bool_isSaves = false;
+
+	private boolean booisURls = false;
+	
+	private CheckBox mBoxs;
+
+	private boolean boolisVibrates;
+
+	private static UpdateCheckbox mUpdateCheckbox;
+	private Alarm mSelectedAlarm;
+	private TextView ringtone;
+	private TextView repeats;
+	private ImageView backdowns;
+	private TextView repWeekDays ;
+	public static void getInstast(UpdateCheckbox mUpdateCheckboxs) {
+		mUpdateCheckbox = mUpdateCheckboxs;
+	}
+
+	/**
+	 * Set an alarm. Requires an Alarms.ALARM_ID to be passed in as an extra.
+	 * FIXME: Pass an Alarm object like every other Activity.
+	 */
+	private View mText;
+	private TextView repeatday;
+private boolean timeChanged = false;
+	
+	//
+	private boolean timeScrolled = false;
+	@Override
+	protected void onCreate(Bundle icicle) {
+		super.onCreate(icicle);
+		setContentView(R.layout.set_alarmss);
+		
+		backdowns=(ImageView) findViewById(R.id.bcaKdown_setting);
+		backdowns.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				AlarmClock.this.finish();
+			}
+		});
+		final WheelView hours = (WheelView) findViewById(R.id.hour);
+		hours.setAdapter(new NumericWheelAdapter(0, 23));
+		//hours.setLabel("hours");
+	
+		final WheelView mins = (WheelView) findViewById(R.id.mins);
+		mins.setAdapter(new NumericWheelAdapter(0, 59, "%02d"));
+		//mins.setLabel("mins");
+		//mins.setCyclic(true);
+	
+		final WheelView hour24 = (WheelView) findViewById(R.id.hour24) ;
+		repeats=(TextView) findViewById(R.id.alert_chongfu);
+		repeats.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intents=new Intent(AlarmClock.this,RepeatClock.class);
+                startActivityForResult(intents, 0) ;
+			}
+		});
+		
+		ringtone = (TextView) findViewById(R.id.choose_ringtones);
+		ringtone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            	Intent intents=new Intent(AlarmClock.this,ClockRing.class);
+                startActivity(intents); 
+          
+            }
+        });
+		TextView alerttSaves = (TextView) findViewById(R.id.alarm_save);
+		alerttSaves.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+			finish();
+			}
+		});
+		TextView deletes = (TextView) findViewById(R.id.alarm_delete);
+		deletes.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
+		repWeekDays = (TextView)findViewById(R.id.repeat_week_days) ;
+		// 使输入法出来的时候，布局不被顶上来。
+		getWindow().setSoftInputMode(
+				WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+		getListView().setItemsCanFocus(true);
+	AlarmPreference.getInstent(this);// 初始化接口。
+//	TextView repeat = (TextView) findViewById(R.id.alert_chongfu);
+//	repeat.setOnClickListener(new OnClickListener() {
+//		@Override
+//		public void onClick(View v) {
+//			// TODO Auto-generated method stub
+//			
+//		}
+//	});
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		if(requestCode == 0){
+			String reapDays = data.getStringExtra("reapDay") ;
+		//	Toast.makeText(getApplicationContext(), reapDays, Toast.LENGTH_LONG).show() ;
+			repWeekDays.setText(reapDays) ;
+			
+		}
+		
+	}
+	
+	  private void launchRingTonePicker(Alarm alarm) {
+	        mSelectedAlarm = alarm;
+	        Uri oldRingtone = Alarm.NO_RINGTONE_URI.equals(alarm.alert) ? null : alarm.alert;
+	        final Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+	        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, oldRingtone);
+	        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
+	        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, false);
+	        startActivityForResult(intent, REQUEST_CODE_RINGTONE);
+	    }
+	private void initTimeBut(){
+	//	mSetTime = findViewById(R.id.settime);
+	//	mSetTime.findViewById(R.id.alert_chongfu).setOnClickListener(this);
+	}
+	
+@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+	}
+// 取消edittext长按弹出复制粘贴功能。
+	private void calarEdit() {
+		mAlertName
+				.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+					@Override
+					public boolean onPrepareActionMode(ActionMode mode,
+							Menu menu) {
+						return false;
+					}
+
+					@Override
+					public void onDestroyActionMode(ActionMode mode) {
+
+					}
+
+					@Override
+					public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+						return false;
+					}
+
+					@Override
+					public boolean onActionItemClicked(ActionMode mode,
+							MenuItem item) {
+						return false;
+					}
+				});
+		mAlertName.setLongClickable(false);
+		mAlertName.setTextIsSelectable(false);
+	}
+
+@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+
+	}
+}
+@Override
+public void upDateModes(int i) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public void upDateText(boolean bool) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public boolean onPreferenceChange(Preference preference, Object newValue) {
+	// TODO Auto-generated method stub
+	return false;
+}
+@Override
+public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+}

@@ -1,0 +1,15 @@
+<resources>
+
+    <string name="app_name">CSClock</string>
+    <string name="clock">闹钟</string>
+    <string name="new_alarm">新建闹钟</string>
+    <string name="distance_ring">距离响铃</string>
+    <string name="ring_time">10小时18分</string>
+    <string name="alarm_set">闹钟设置</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="repeat">重复</string>
+    <string name="valite">震动</string>
+    <string name="ring">铃声</string>
+    <string name="ok">确定</string>
+</resources>

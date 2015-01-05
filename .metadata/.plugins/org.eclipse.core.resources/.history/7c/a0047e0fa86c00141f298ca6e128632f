@@ -1,0 +1,37 @@
+package com.example.test;
+
+import android.graphics.RectF;
+
+public class SosButton {
+	
+	public Listener listener ;
+	
+	
+	public RectF frame ;
+	
+	
+	
+	public SosButton(RectF r){
+		this.frame = r ;
+	}
+	
+	
+	public RectF getFrame() {
+		return frame;
+	}
+
+
+	public void touch(){
+		
+	}
+	
+	
+	public void setListener(Listener listener) {
+		this.listener = listener;
+	}
+
+
+	public interface Listener{
+		public void click() ;
+	}
+}

@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;DeskClock/res/drawable-hdpi/clock-S.png&apos; to &apos;clock_S.png&apos;" description="Rename resource &apos;clock-S.png&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="res/drawable-hdpi/clock-S.png" name="clock_S.png" stamp="1417365002844" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;DeskClock/res/drawable-hdpi/add-clock.png&apos; to &apos;add_clock.png&apos;" description="Rename resource &apos;add-clock.png&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="res/drawable-hdpi/add-clock.png" name="add_clock.png" stamp="1417366311895" updateReferences="true"/>
+</session>

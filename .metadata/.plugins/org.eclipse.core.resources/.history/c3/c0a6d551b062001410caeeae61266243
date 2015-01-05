@@ -1,0 +1,5 @@
+package com.mediatek.launcher2.ext;
+
+public class LauncherLog {
+
+}

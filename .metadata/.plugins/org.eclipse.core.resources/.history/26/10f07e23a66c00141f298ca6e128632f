@@ -1,0 +1,25 @@
+package com.example.test;
+
+public class SosButton {
+	
+	public Listener listener ;
+	
+	public SosButton(int width,inr height){
+		
+	}
+	
+	
+	public void touch(){
+		
+	}
+	
+	
+	public void setListener(Listener listener) {
+		this.listener = listener;
+	}
+
+
+	public interface Listener{
+		public void click() ;
+	}
+}

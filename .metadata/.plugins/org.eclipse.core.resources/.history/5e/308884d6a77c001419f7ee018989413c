@@ -1,0 +1,195 @@
+package com.yang.test;
+
+
+import java.io.IOException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.http.RequestManager.RequestListener;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.Response.ErrorListener;
+import com.example.actionbartest.R;
+
+public class ActionBarTest extends Activity {
+	RequestQueue quene ;
+	
+	Button mGetData ;
+	
+	EditText mShowData ;
+	
+	TextView mIP ;
+	TextView mCountry ;
+	Animation ainim ;
+	ImageView clock ;
+	static final String url = "http://apistore.baidu.com/microservice/iplookup?ip=117.89.35.58" ;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		
+		/*ActionBar bar = getActionBar() ;
+		Drawable r = getResources().getDrawable(R.drawable.image544) ;
+		bar.setLogo(r) ;
+		bar.setSubtitle("今日新闻") ;
+		bar.setSubtitle("朝鲜金正恩访问中国") ;
+		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST) ;
+		//bar.setBackgroundDrawable(getResources().getDrawable(R.drawable.bottom_bj)) ;
+		bar.show() ;*/
+		setContentView(R.layout.main2) ;
+		
+		clock = (ImageView) findViewById(R.id.clock) ;
+		ainim = AnimationUtils.loadAnimation(this, R.anim.clock_anim) ;
+		ainim.setRepeatMode(Animation.REVERSE) ;
+		ainim.setRepeatCount(-1) ;
+		//clock.setAnimation(ainim) ;
+		
+		//clock.startAnimation(ainim) ; 
+		/*mGetData = (Button) findViewById(R.id.getData) ;
+		mIP = (TextView) findViewById(R.id.ip) ;
+		mCountry = (TextView) findViewById(R.id.country) ;
+		RequestManager.getInstance().init(this) ;
+		mGetData.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				LoadControler lc = RequestManager.getInstance().get(url, listener, 1) ;
+				
+			}
+		}) ;*/
+		
+		
+	}
+	
+	public RequestListener listener = new RequestListener() {
+		
+		@Override
+		public void onSuccess(String response, String url, int actionId) {
+			// TODO Auto-generated method stub
+			
+			
+			try {
+				JSONObject object = new JSONObject(response) ;
+				JSONObject os = object.getJSONObject("retData") ;
+				
+				
+				Toast.makeText(getApplicationContext(), os.getString("cityName"), Toast.LENGTH_SHORT).show() ;
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		@Override
+		public void onRequest() {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void onError(String errorMsg, String url, int actionId) {
+			// TODO Auto-generated method stub
+			Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show() ;
+		}
+	};
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		/*MenuItem add = menu.add(0,0,0,"add") ;
+		MenuItem save = menu.add(0,0,0,"save") ;
+		MenuItem del = menu.add(0,0,0,"del") ;
+		add.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM) ;
+		save.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM) ;
+		del.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM) ;*/
+		MenuInflater inflater = getMenuInflater() ;
+		
+		inflater.inflate(R.menu.menu, menu) ;
+		return true;
+	}
+	
+	
+	
+	
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		// TODO Auto-generated method stub
+		
+		if(item.getTitle().equals("add")){
+			openClock() ;
+		}else if(item.getTitle().equals("insert")){
+			closeClock() ;
+		}
+		
+		return super.onMenuItemSelected(featureId, item);
+	}
+	private void closeClock() {
+		// TODO Auto-generated method stub
+		clock.clearAnimation() ;
+		mp.stop() ;
+	}
+	MediaPlayer mp ;
+	private void openClock() {
+		// TODO Auto-generated method stub
+		clock.startAnimation(ainim) ;
+		Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM) ;
+		mp = new MediaPlayer() ;
+		try {
+			mp.setDataSource(this, uri) ;
+			final AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE) ;
+			
+			if(audio.getStreamVolume(AudioManager.STREAM_ALARM) != 0){
+				mp.setAudioStreamType(AudioManager.STREAM_ALARM) ;
+				mp.setLooping(true) ;
+				mp.prepare() ;
+				mp.start() ;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	public class JosnResquest extends Request<String>{
+
+		public JosnResquest(int method, String url, ErrorListener listener) {
+			super(method, url, listener);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		protected Response<String> parseNetworkResponse(NetworkResponse response) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		protected void deliverResponse(String response) {
+			// TODO Auto-generated method stub
+			mShowData.setText(response) ;
+		}
+		
+	}
+}

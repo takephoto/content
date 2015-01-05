@@ -1,0 +1,9 @@
+package com.mediatek.launcher2.ext;
+
+public class LauncherLog {
+	public static final Boolean DEBUG_KEY = true ;
+	
+	static void d(){
+		
+	}
+}

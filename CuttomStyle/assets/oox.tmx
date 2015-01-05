@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="17" height="10" tilewidth="48" tileheight="48">
+ <tileset firstgid="1" name=" frame10" tilewidth="48" tileheight="48">
+  <image source="frame.jpg" width="1080" height="400"/>
+ </tileset>
+ <layer name="块层 1" width="17" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYBg8oB8JU8ssUtSTIj4QZqBjfOrwmd+PxidFPyFzqRV/6AAAnpkOhw==
+  </data>
+ </layer>
+</map>

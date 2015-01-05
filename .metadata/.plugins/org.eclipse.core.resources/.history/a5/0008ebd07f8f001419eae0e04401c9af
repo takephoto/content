@@ -1,0 +1,831 @@
+package com.android.deskclock;
+
+/*
+ * Copyright (C) 2007 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.regex.Pattern;
+
+
+import kankan.wheel.widget.ArrayWheelAdapter;
+import kankan.wheel.widget.NumericWheelAdapter;
+import kankan.wheel.widget.OnWheelChangedListener;
+import kankan.wheel.widget.OnWheelScrollListener;
+import kankan.wheel.widget.WheelView;
+
+
+
+
+
+
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.ActionMode;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import com.android.deskclock.alarms.AlarmStateManager;
+import com.android.deskclock.provider.Alarm;
+import com.android.deskclock.provider.AlarmInstance;
+import com.android.deskclock.provider.DaysOfWeek;
+
+
+
+public class AlarmClock extends PreferenceActivity implements
+		TimePickerDialog.OnTimeSetListener,
+		Preference.OnPreferenceChangeListener, View.OnClickListener, UpteMOdes {
+
+	// private EditTextPreference mLabel;
+	// private CheckBoxPreference mEnabledPref;
+	// private Preference mTimePref;
+	private AlarmPreference mAlarmPref;
+	// private CheckBoxPreference mVibratePref;   
+	private RepeatPreference mRepeatPref;
+	private MenuItem mTestAlarmItem;   
+	private static final String KEY_DEFAULT_RINGTONE = "default_ringtone";
+	private int mId;
+	private int mHour;
+	private int mMinutes;
+	private boolean mTimePickerCancelled;
+	private EditText mAlertName;
+	private ImageView mShowMsg;
+
+	private View mSetTime;
+	// 时间.
+	private TextView m_textHour, mMinute, showTimes;
+
+	private boolean intentAlert;
+
+	private Alarm alarm_intent = null;
+
+	private Dialog lDialog = null;
+
+	private Dialog lDialogs = null;
+
+	private RadioButton rb_3, rb_5, rb_10, rb_15, rb_30;
+	private View layout3,layout5,layout10,layout15,layout30;
+	private RadioButton rm_1, rm_2, rm_3, rm_4;
+
+	private ArrayList<RadioButton> mRadio = new ArrayList<RadioButton>();
+
+	private ArrayList<RadioButton> mRadioModes = new ArrayList<RadioButton>();
+
+	private RadioButton selectRadioButton;
+
+	private RadioButton seleteModeos;
+
+	private int SelectTime = 10;
+	 private static final int REQUEST_CODE_RINGTONE = 1;
+
+	private GridView mGrid;
+
+	private boolean bool = false;
+
+	private View mView;
+
+	private View mBottonView;
+
+	private boolean isVibrate;// 是否震动
+
+	private boolean bool_isSaves = false;
+
+	private boolean booisURls = false;
+    private boolean timeChanged = false;
+    private Bundle mRingtoneTitleCache; // Key: ringtone uri, value: ringtone title
+
+	//
+	private boolean timeScrolled = false;
+	private CheckBox mBoxs;
+
+	private boolean boolisVibrates;
+
+	private static UpdateCheckbox mUpdateCheckbox;
+	private Alarm mSelectedAlarm;
+	private TextView ringtone;
+	private TextView repeats;
+	private ImageView backdowns;
+	private TextView repWeekDays;
+	private TextView ringclock;
+	private Uri mAlert;
+	private Context mCon;
+	private CheckBox ringvibration;
+	String reapDays = "" ;
+	boolean isValite = false ;
+	 String strTimeFormat ="";
+	public static void getInstast(UpdateCheckbox mUpdateCheckboxs) {
+		mUpdateCheckbox = mUpdateCheckboxs;
+	}
+
+	/**
+	 * Set an alarm. Requires an Alarms.ALARM_ID to be passed in as an extra.
+	 * FIXME: Pass an Alarm object like every other Activity.
+	 */
+	Alarm ret = new Alarm();
+	private View mText;
+	private TextView repeatday;
+	
+	@Override
+	protected void onCreate(Bundle icicle) {
+		super.onCreate(icicle);
+		setContentView(R.layout.set_alarmss);
+		mAlarmPref = (AlarmPreference) findPreference("alarm");
+		//mAlarmPref.setOnPreferenceChangeListener(this);
+           final WheelView hours = (WheelView) findViewById(R.id.hour);
+		hours.setAdapter(new NumericWheelAdapter(0, 23));
+		//hours.setLabel("hours");
+		long alarmId = getIntent().getLongExtra("alarmId", 0) ;
+		
+		Alarm alarm = Alarm.getAlarm(getContentResolver(), alarmId) ;
+		
+		
+ 		final WheelView mins = (WheelView) findViewById(R.id.mins);
+		mins.setAdapter(new NumericWheelAdapter(0, 59, "%02d"));
+		//mins.setLabel("mins");
+		//mins.setCyclic(true);
+		OnWheelScrollListener scrollListener = new OnWheelScrollListener() {
+			public void onScrollingStarted(WheelView wheel) {
+				timeScrolled = true;
+			}
+			public void onScrollingFinished(WheelView wheel) {
+				timeScrolled = false;
+				timeChanged = true;
+		    String	valuess = hours.getCurrentItem()+":"+mins.getCurrentItem();
+        	Log.i("valuess", " ====设置的时间值======"+      valuess);
+
+				timeChanged = false;
+			}
+		};
+		final WheelView hour24 = (WheelView) findViewById(R.id.hour24) ;
+		ContentResolver cv = this.getContentResolver();
+        strTimeFormat = android.provider.Settings.System.getString(cv,
+                                           android.provider.Settings.System.TIME_12_24);
+        //Switch the background picture
+        LinearLayout temp=(LinearLayout)findViewById(R.id.timebackground);
+        if(strTimeFormat==null||"".equals(strTimeFormat)){
+        	Log.i("strTimeFormat", "=========null==========");
+        }else {
+        if(strTimeFormat.equals("24"))
+       {
+        	
+        	hour24.setVisibility(View.GONE) ;
+        	Log.i("strTimeFormat", "====strTimeFormat111111======"+strTimeFormat);
+        	//I/strTimeFormat( 3584): ====strTimeFormat111111======24
+        	
+        	Drawable   d=this.getResources().getDrawable(R.drawable.hour_24);
+            temp.setBackgroundDrawable(d);
+       }else if (strTimeFormat.equals("12")){
+    	   final WheelView hours12 = (WheelView) findViewById(R.id.hour);
+     		hours.setAdapter(new NumericWheelAdapter(0, 12));
+    	   hour24.setAdapter(new ArrayWheelAdapter<String>(new String[]{"上午","下午"})) ;
+       	Log.i("strTimeFormat", "====strTimeFormat222222======"+strTimeFormat);
+           //I/strTimeFormat( 3584): ====strTimeFormat222222======12
+        Drawable d=this.getResources().getDrawable(R.drawable.hour_12);
+        temp.setBackgroundDrawable(d);
+       }
+        }
+	// set current time
+		Calendar c = Calendar.getInstance();
+		int curHours = c.get(Calendar.HOUR_OF_DAY);
+		int curMinutes = c.get(Calendar.MINUTE);
+	    hours.setCurrentItem(alarm.hour);
+		mins.setCurrentItem(alarm.minutes);
+	
+		//picker.setCurrentHour(curHours);
+		//picker.setCurrentMinute(curMinutes);
+	
+		// add listeners
+		//addChangingListener(mins, "min");
+		//addChangingListener(hours, "hour");
+	
+		OnWheelChangedListener wheelListener = new OnWheelChangedListener() {
+			public void onChanged(WheelView wheel, int oldValue, int newValue) {
+				if (!timeScrolled) {
+					timeChanged = true;
+					//picker.setCurrentHour(hours.getCurrentItem());
+					//picker.setCurrentMinute(mins.getCurrentItem());
+					timeChanged = false;
+				}
+			}
+		};
+
+		hours.addChangingListener(wheelListener);
+		mins.addChangingListener(wheelListener);
+
+//		OnWheelScrollListener scrollListener = new OnWheelScrollListener() {
+//			public void onScrollingStarted(WheelView wheel) {
+//				timeScrolled = true;
+//			}
+//			public void onScrollingFinished(WheelView wheel) {
+//				timeScrolled = false;
+//				timeChanged = true;
+//				//picker.setCurrentHour(hours.getCurrentItem());
+//				//picker.setCurrentMinute(mins.getCurrentItem());
+//				timeChanged = false;
+//			}
+//		};
+		
+		hours.addScrollingListener(scrollListener);
+		mins.addScrollingListener(scrollListener);
+		final TimePicker picker = (TimePicker) findViewById(R.id.time);
+		picker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+			public void onTimeChanged(TimePicker  view, int hourOfDay, int minute) {
+				if (!timeChanged) {
+					hours.setCurrentItem(hourOfDay, true);
+					mins.setCurrentItem(minute, true);
+					Log.i("onTimeChanged", "==hours======="+hours);
+					Log.i("onTimeChanged", "==mins======="+mins);
+				}
+			}
+		});
+	
+		ringclock=(TextView) findViewById(R.id.repeat_ring);
+		//SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(AlarmClock.this);
+		Ringtone ringTone = RingtoneManager.getRingtone(this, alarm.alert);
+        
+		ringclock.setText(ringTone.getTitle(this));
+		ringclock.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				Alarm a = new Alarm() ;
+				a.alert = Uri.parse(getDefaultRingtone(getApplicationContext())) ;
+				launchRingTonePicker(a);
+			}
+		});
+		
+		backdowns=(ImageView) findViewById(R.id.bcaKdown_setting);
+		backdowns.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				AlarmClock.this.finish();
+			}
+		});
+		ringvibration=(CheckBox)findViewById(R.id.alertbox);
+		ringvibration.setEnabled(alarm.vibrate) ;
+		ringvibration.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				isValite = ringvibration.isChecked() ;
+			}
+		});
+		repeats=(TextView) findViewById(R.id.alert_chongfu);
+		final String daysOfWeekStr =
+                alarm.daysOfWeek.toString(this, false);
+		repeats.setText(daysOfWeekStr) ;
+		repeats.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) { 
+				// TODO Auto-generated method stub
+				Intent intents=new Intent(AlarmClock.this,RepeatClock.class);
+                startActivityForResult(intents, 0) ;
+			}
+		});
+		
+		ringtone = (TextView) findViewById(R.id.choose_ringtones);
+		ringtone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            	//Intent intents=new Intent(AlarmClock.this,ClockRing.class);
+              //  startActivity(intents); 
+            	Alarm a = new Alarm() ;
+				a.alert = Uri.parse(getDefaultRingtone(getApplicationContext())) ;
+            	launchRingTonePicker(a);
+            }
+        });
+		TextView alerttSaves = (TextView) findViewById(R.id.alarm_save);
+		alerttSaves.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent t = getIntent() ;
+				if(hour24 != null && hour24.getCurrentItem() == 0){
+				t.putExtra("hour", hours.getCurrentItem()+12) ;
+				}else{
+					t.putExtra("hour", hours.getCurrentItem()) ;
+				}
+				t.putExtra("minuts", mins.getCurrentItem()) ;
+				t.putExtra("value", getDefaultRingtone(getApplication())) ;
+				t.putExtra("vailte",isValite) ;
+				t.putExtra("repdays",reapDays) ;
+				AlarmClock.this.setResult(2, t) ;
+				AlarmClock.this.finish() ;
+			}                
+		});
+		TextView deletes = (TextView) findViewById(R.id.alarm_delete);
+		deletes.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
+		
+		//设置存放好的星期；
+		repWeekDays = (TextView)findViewById(R.id.repeat_week_days) ;
+		repWeekDays.setText(R.string.danci)	;
+		
+		repWeekDays.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intents=new Intent(AlarmClock.this,RepeatClock.class);
+                startActivityForResult(intents, 0) ;
+			}
+		});
+		// 使输入法出来的时候，布局不被顶上来。
+		getWindow().setSoftInputMode(
+				WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+		getListView().setItemsCanFocus(true);
+	     AlarmPreference.getInstent(this);// 初始化接口。
+//	TextView repeat = (TextView) findViewById(R.id.alert_chongfu);
+//	repeat.setOnClickListener(new OnClickListener() {
+//		@Override
+//		public void onClick(View v) {
+//			// TODO Auto-generated method stub
+//			
+//		}
+//	});
+	}
+//    @Override   
+//    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+//        if (mSelectedAlarm == null) {
+//            // If mSelectedAlarm is null then we're creating a new alarm.
+//            Alarm a = new Alarm();
+//
+//            ///M: get default ringtone from preference, not the system @{
+//            String defaultRingtone = getDefaultRingtone(getActivity());
+//            if (isRingtoneExisted(this, defaultRingtone)) {
+//                a.alert = Uri.parse(defaultRingtone);
+//            } else {
+//                a.alert = RingtoneManager.getActualDefaultRingtoneUri(getActivity(),
+//                          RingtoneManager.TYPE_ALARM);
+//            }
+//            ///@}
+//            if (a.alert == null) {
+//                a.alert = Uri.parse("content://settings/system/alarm_alert");
+//            }
+//            a.hour = hourOfDay;
+//            a.minutes = minute;
+//            a.enabled = true;
+//            asyncAddAlarm(a);
+//        } else {
+//            mSelectedAlarm.hour = hourOfDay;
+//            mSelectedAlarm.minutes = minute;
+//            mSelectedAlarm.enabled = true;
+//            mScrollToAlarmId = mSelectedAlarm.id;
+//            asyncUpdateAlarm(mSelectedAlarm, true);
+//            mSelectedAlarm = null;
+//        }
+//    }
+//	 private int mDays;
+//	 DaysOfWeek daysWek = new DaysOfWeek(mDays) ;
+//      void DaysOfWeek(int days) {
+//         mDays = days;
+//     }
+//	   public String toString(Context context, boolean showNever) {
+//           
+//            String danci=context.getString(R.string.danci);
+//           // no days
+//           if (mDays == -1) {
+//               return showNever ?
+//               		danci+"\t"+new SimpleDateFormat("yyyy/MM/dd").format(new Date()) : "";
+//           }
+//               return ret.toString();
+//       }
+	private void setBoolsave() {
+		if (intentAlert) {
+			if (alarm_intent.alert == null && mAlarmPref.getAlert() == null) {
+				Log.i("lwwbooisURls", "booisURls111");
+				booisURls = false;
+				return;
+			}
+			if (alarm_intent.alert != null && mAlarmPref.getAlert() != null) {
+				Log.i("lwwbooisURls", "booisURls222");
+				booisURls = true;
+				return;
+			}
+			if (alarm_intent.alert != null && mAlarmPref.getAlert() == null) {
+				Log.i("lwwbooisURls", "booisURls333");
+				booisURls = true;
+				return;
+			}
+			if (mAlarmPref.getAlert() != null
+					&& alarm_intent.alert.toString().equals(
+							mAlarmPref.getAlert().toString().trim())) {
+				Log.i("lwwbooisURls", "booisURls444");
+				booisURls = false;
+			} else {
+				Log.i("lwwbooisURls", "booisURls555");
+				booisURls = true;
+			}
+			if (mRepeatPref.getDaysOfWeek().getCoded() != alarm_intent.daysOfWeek
+					.getCoded()) {
+				Log.i("lwwbooisURls", "booisURls666");
+				booisURls = true;
+			}
+
+		} else {
+			String urls = "content://settings/system/alarm_alert";
+			if (mAlarmPref.getAlert() == null) {
+				bool_isSaves = true;
+				return;
+			}
+			if (mAlarmPref.getAlert() != null
+					&& mAlarmPref.getAlert().toString().trim().equals(urls)) {
+				booisURls = false;
+			} else {
+				bool_isSaves = true;
+			}
+			if (mRepeatPref.getDaysOfWeek().getCoded() != 0) {
+				bool_isSaves = true;
+			}
+		}
+	}
+	@Override      
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if(data==null){
+			Log.i("data", "=======data=====null   ");
+
+		}else{
+			Log.i("data", "=======data=====null   ");
+			if(requestCode == 0){
+				
+				reapDays = data.getStringExtra("reapDay") ;
+				
+				String repDayStr = data.getStringExtra("reapDayStr") ;
+			//	Toast.makeText(getApplicationContext(), reapDays, Toast.LENGTH_LONG).show() ;
+				repWeekDays.setText(repDayStr) ;
+				 
+			} 
+		}
+	
+		  if (resultCode == Activity.RESULT_OK) {
+	            switch (requestCode) {
+	                case REQUEST_CODE_RINGTONE:
+	                    saveRingtoneUri(data);
+	            		break;
+	                default:
+	                   
+	            }
+	        }
+	}
+	private void addChangingListener(final WheelView wheel, final String label) {
+		wheel.addChangingListener(new OnWheelChangedListener() {
+			public void onChanged(WheelView wheel, int oldValue, int newValue) {
+				wheel.setLabel(newValue != 1 ? label + "s" : label);
+			}
+		});
+	}
+	private void launchRingTonePicker(Alarm alarm) {
+	        mSelectedAlarm = alarm;
+	        Uri oldRingtone = Alarm.NO_RINGTONE_URI.equals(alarm.alert) ? null : alarm.alert;
+	        final Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+	        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, oldRingtone);
+	        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
+	        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, false);
+	        startActivityForResult(intent, REQUEST_CODE_RINGTONE);
+	        
+	    }
+	private void saveRingtoneUri(Intent intent) {
+		 String ringtoneTitle;
+        Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+        ringtoneTitle = this.getResources().getString(R.string.silent_alarm_summary);
+        if (uri == null) {
+            uri = Alarm.NO_RINGTONE_URI;
+          //  .0
+        }
+        
+//        Toast.makeText(this, uri.toString(), Toast.LENGTH_LONG).show() ;
+        ringtoneTitle= getRingToneTitle(uri) ;
+        
+        mSelectedAlarm.alert = uri;
+         
+
+        // Save the last selected ringtone as the default for new alarms
+        if (!Alarm.NO_RINGTONE_URI.equals(uri)) {
+            ///M: Don't set the ringtone to the system, just to the preference @{
+            RingtoneManager.setActualDefaultRingtoneUri(
+                    this, RingtoneManager.TYPE_ALARM, uri);
+            setDefaultRingtone(uri.toString());
+            ///@}
+           // Log.v("saveRingtoneUri = " + uri.toString());
+        }
+        asyncUpdateAlarm(mSelectedAlarm, false);
+        ringclock.setText(ringtoneTitle);
+
+    }
+	private String getRingToneTitle(Uri uri) {
+        // Try the cache first
+        String title = null ;
+        if (title == null) {
+            // This is slow because a media player is created during Ringtone object creation.
+            Ringtone ringTone = RingtoneManager.getRingtone(this, uri);
+            title = ringTone.getTitle(this);
+       //     Toast.makeText(this, title, Toast.LENGTH_LONG).show() ;
+            if (title != null) {
+                //mRingtoneTitleCache.putString(uri.toString(), title);
+            }
+        }
+        return title;
+    }
+	
+
+	public String setDefaultRingtone(String defaultRingtone) {
+		      
+		   if (TextUtils.isEmpty(defaultRingtone)) {
+	            
+	        }
+	        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(AlarmClock.this);
+	        SharedPreferences.Editor editor = prefs.edit();
+	        editor.putString(KEY_DEFAULT_RINGTONE, defaultRingtone);
+	        editor.apply();
+	        //ringclock.setText(defaultRingtone);
+			return defaultRingtone;
+	    }
+	//   I/lwwURl  ( 4342): 11111 url== content://media/internal/audio/media/33
+
+	   @Override
+	public void onSaveRingtone(Uri ringtoneUri) {
+			setAlert(ringtoneUri);
+			
+			Log.i("zhengshaoyang", "---=    " + ringtoneUri);
+                return ;
+		}
+	   public Uri getAlert() {
+		   return mAlert;
+			
+		}
+	   public void setAlert(Uri alert) {
+		  
+			try {
+				setTitle("");
+				mAlert = alert;
+				if (alert != null) {
+					final Ringtone r = RingtoneManager.getRingtone(getBaseContext(),
+							alert);
+					if (r != null) {
+						String strs = mCon.getString(R.string.alarm_clocks);
+						String text = r.getTitle(getBaseContext());
+						if (isNumeric(text.trim())) {
+							int index = alert.toString().lastIndexOf("/");
+							String newText = alert.toString().substring(index + 1, alert
+									.toString().length());
+							if (newText.trim().equals(text.trim())) {
+								text = mCon.getString(R.string.alarms_moren);
+							}
+						}
+						if (text.contains("默认") ||text.contains("default") )
+							text = mCon.getString(R.string.alarms_moren);
+						// text=text.replace(" ","");
+						if (!checkNameChese(text)) {
+							if (text.length() > 10)
+								text = text.substring(0, 10) + "...";
+						} else {
+							if (text.length() > 8)
+								text = text.substring(0, 8) + "...";
+						}
+	
+					}
+				} else {
+					String strs = mCon.getString(R.string.alarm_clocks);
+					String strs2 = mCon.getString(R.string.silent_alarm_summary);
+					String sss = "<big><font color='black'>" + strs + "\t\t\t"
+							+ strs2 + "</font></big>";
+					Spanned s = Html.fromHtml(sss.trim());
+//					setSummary(s);
+					//===999========    content://media/internal/audio/media/23
+				//	I/ringclock(18743): ======777777========    android.media.Ringtone@42616908
+					//		I/ringclock(18743): ======121212========    Rington:			Argon
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		public boolean checkNameChese(String name) {
+			boolean res = true;
+			char[] cTemp = name.toCharArray();
+			for (int i = 0; i < name.length(); i++) {
+				if (!isChinese(cTemp[i])) {
+					res = false;
+					break;
+				}
+			}
+			return res;
+		}
+		public boolean isChinese(char c) {
+			Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
+			if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+					|| ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+					|| ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+					|| ub == Character.UnicodeBlock.GENERAL_PUNCTUATION
+					|| ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
+					|| ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS) {
+				return true;
+			}
+			return false;
+		}
+	   private boolean isNumeric(String str) {
+			Pattern pattern = Pattern.compile("[0-9]*");
+			return pattern.matcher(str).matches();
+		}
+	   public static String getDefaultRingtone(Context context) {
+	        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+	        String defaultRingtone = prefs.getString(KEY_DEFAULT_RINGTONE, "");
+	     
+	        return defaultRingtone;
+	    }
+
+	   private void asyncUpdateAlarm(final Alarm alarm, final boolean popToast) {
+	        final Context context = AlarmClock.this.getApplicationContext();
+	        final AsyncTask<Void, Void, AlarmInstance> updateTask =
+	                new AsyncTask<Void, Void, AlarmInstance>() {
+	            @Override
+	            protected AlarmInstance doInBackground(Void ... parameters) {
+	                ContentResolver cr = context.getContentResolver();
+
+	                // Dismiss all old instances
+	                AlarmStateManager.deleteAllInstances(context, alarm.id);
+
+	                // Update alarm
+	                Alarm.updateAlarm(cr, alarm);
+	                if (alarm.enabled) {
+	                    return setupAlarmInstance(context, alarm);
+	                }
+
+	                return null;
+	            }  
+	            private AlarmInstance setupAlarmInstance(Context context, Alarm alarm) {
+	                ContentResolver cr = context.getContentResolver();
+	                AlarmInstance newInstance = alarm.createInstanceAfter(Calendar.getInstance());
+	                newInstance = AlarmInstance.addInstance(cr, newInstance);
+	                // Register instance to state manager
+	                AlarmStateManager.registerInstance(context, newInstance, true);
+	                return newInstance;
+	            }
+	            @Override
+	            protected void onPostExecute(AlarmInstance instance) {
+	                if (popToast && instance != null) {
+	                 //  AlarmUtils.popAlarmSetToast(context, instance.getAlarmTime().getTimeInMillis());
+	                String toastText = AlarmUtils.popAlarmSetToast1(context, instance.getAlarmTime().getTimeInMillis());
+	                //ringdown=  (TextView)headView.findViewById(R.id.time_distance);
+	                
+	             //   ringdown.setText(toastText);
+	                android.util.Log.i("clocktimes", "1111111111==========="+toastText);
+	               
+//	               	SharedPreferences share = AlarmClockFragment.this
+//							.getSharedPreferences(filename,
+//									Context.MODE_PRIVATE);
+//					SharedPreferences.Editor editor = share.edit();
+//					editor.putBoolean("ringdowns", true);
+//					editor.commit();
+	                }
+	                
+	            }
+	        };
+	        updateTask.execute();
+	    }
+	private void initTimeBut(){
+	//	mSetTime = findViewById(R.id.settime);
+	//	mSetTime.findViewById(R.id.alert_chongfu).setOnClickListener(this);
+	}
+	
+@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+	}
+// 取消edittext长按弹出复制粘贴功能。
+	private void calarEdit() {
+		mAlertName
+				.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+					@Override
+					public boolean onPrepareActionMode(ActionMode mode,
+							Menu menu) {
+						return false;
+					}
+
+					@Override
+					public void onDestroyActionMode(ActionMode mode) {
+
+					}
+
+					@Override
+					public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+						return false;
+					}
+
+					@Override
+					public boolean onActionItemClicked(ActionMode mode,
+							MenuItem item) {
+						return false;
+					}
+				});
+		mAlertName.setLongClickable(false);
+		mAlertName.setTextIsSelectable(false);
+	}
+
+@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+
+	}
+}
+@Override
+public void upDateModes(int i) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public void upDateText(boolean bool) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public boolean onPreferenceChange(Preference preference, Object newValue) {
+	// TODO Auto-generated method stub
+	return false;
+}
+@Override
+public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public View onCreateView(LayoutInflater inflater, ViewGroup container,
+		Bundle savedState) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+
+}

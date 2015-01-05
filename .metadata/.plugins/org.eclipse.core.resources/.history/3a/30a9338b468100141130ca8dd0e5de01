@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     android:background="@android:color/white"
+    android:orientation="vertical" >
+    
+
+
+    <TextView
+        android:id="@+id/titles"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:background="@color/alarm_bottom_color"
+        android:gravity="center_vertical"
+     
+        android:text="@string/new_create"
+        android:textColor="@android:color/white"
+        android:textSize="60px"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/bettons"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+        
+          <TextView
+            android:id="@+id/alarm_save"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_clock_ok"
+            android:gravity="center"
+            android:textSize="22sp" 
+             android:textColor="@android:color/white"
+            android:text="@string/time_picker_set"
+            />
+       <TextView
+            android:id="@+id/alarm_delete"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_clock_no"
+            android:gravity="center"
+            android:text="@string/time_picker_cancel"
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/show_gridmsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titles"
+        android:layout_marginTop="20dp"
+        android:background="@android:color/white"
+        android:numColumns="2"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/settime"
+        android:layout_width="match_parent"  
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bettons"
+        android:layout_below="@id/titles" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical" >
+
+            
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="15dp"
+                android:background="@color/alarm_bottom_color" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="7dp"
+                    android:gravity="center|left"
+                    android:text="@string/new_create"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" 
+                    android:visibility="gone"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="18dp"
+                    android:visibility="gone" >
+
+                    <EditText
+                        android:id="@+id/alertName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="3dp"
+                        android:layout_marginTop="2dp"
+                        android:singleLine="true" 
+                        android:visibility="gone"/>
+
+                    <ImageView
+                        android:id="@+id/show_msg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center"
+                        android:layout_marginRight="15dp"
+                        android:visibility="gone" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.4dp"
+                android:background="@color/alarm_bottom_color" />
+
+            <ListView
+                android:id="@android:id/list"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:background="@android:color/white"
+                android:divider="@color/alarm_bottom_color"
+                android:dividerHeight="0.4dp"
+                android:scrollbars="none" />
+            <View
+                android:id="@+id/showLines"
+                android:layout_width="match_parent"
+                android:layout_height="0.4dp"
+                android:background="@color/alarm_bottom_color"
+                android:visibility="gone"
+                 />
+            <LinearLayout 
+                
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal" 
+                 >
+
+                 <TextView
+                     android:id="@+id/alert_chongfu"
+                     android:layout_width="match_parent"
+                     android:layout_height="60dp"
+                     android:background="@android:color/transparent"
+                     android:gravity="center_vertical"
+                     android:layout_marginLeft="20dp"
+                     android:text="@string/alarm_repeat"
+                     android:textColor="@android:color/black"
+                     android:textSize="18sp" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/alert_settime"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:orientation="horizontal" 
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginLeft="10dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center|right"
+                    android:text="@string/tuichi"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" 
+                    />
+
+                <TextView
+                    android:id="@+id/show_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="28dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center|left"
+                    android:text="@string/ro5"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.4dp"
+                android:background="@color/alarm_bottom_color" />
+
+            <RelativeLayout
+                android:id="@+id/alert_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+              >
+
+                <CheckBox
+                    android:id="@+id/alertbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    
+                    android:layout_marginLeft="70dp"
+                    android:checked="true"
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:id="@+id/alert_bration"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/bration"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:id="@+id/choose_ringtones"
+                    android:layout_height="70dp"
+                    android:layout_width="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center_vertical"
+                    style="@style/body"
+                    android:background="@drawable/huise"
+                    android:clickable="true"
+                    android:textColor="@color/main_huise"
+                    android:ellipsize="marquee"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:drawableLeft="@drawable/ic_ringtone"
+                    android:drawableStart="@drawable/ic_ringtone"
+                    android:drawablePadding="2dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/vibrate_onoff"
+                    android:layout_toStartOf="@+id/vibrate_onoff"
+                    />
+                  <CheckBox
+                    android:id="@+id/vibrate_onoff"
+                    android:text="@string/alarm_vibrate"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/main_huise"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    style="@style/body"
+                    android:visibility="gone"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.4dp"
+                android:background="@color/alarm_bottom_color" />
+        </LinearLayout>
+    </ScrollView>
+
+
+</RelativeLayout>

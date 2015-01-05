@@ -1,0 +1,307 @@
+package com.yang.deskclock;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import kankan.wheel.widget.ArrayWheelAdapter;
+import kankan.wheel.widget.NumericWheelAdapter;
+import kankan.wheel.widget.OnWheelChangedListener;
+import kankan.wheel.widget.OnWheelScrollListener;
+import kankan.wheel.widget.WheelView;
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.csclock.R;
+
+
+
+
+public class AlarmSet extends FragmentActivity {
+	private TextView mNavTitle ;
+	
+	private ListView mAlarmSetList ;
+	
+	private List<Map<String,String>> alarmSets = new ArrayList<Map<String,String>>() ; 
+	
+	
+	private ImageView mBackImageView ;
+	
+	// Time changed flag
+	private boolean timeChanged = false;
+		
+		//
+	private boolean timeScrolled = false;
+	
+	private AlarmSetAdapter mAlarmAdapter; 
+	SharedPreferences sh ;
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE) ;
+		setContentView(R.layout.alarm_setting) ;
+		sh = getSharedPreferences("alarm", Context.MODE_PRIVATE) ;
+		initTimeSelView() ;
+		mNavTitle = (TextView)findViewById(R.id.title) ;
+		mNavTitle.setText(R.string.alarm_set) ;
+		mBackImageView  = (ImageView) findViewById(R.id.bcaK_down_clock) ;
+		mBackImageView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish() ;
+			}
+		}) ;
+		mAlarmSetList = (ListView) findViewById(R.id.alarm_set_list) ;
+		initData() ;
+		mAlarmAdapter = new AlarmSetAdapter() ;
+		mAlarmSetList.setAdapter(mAlarmAdapter) ;
+		mAlarmSetList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				if(position == 0){
+					Intent t = new Intent(AlarmSet.this,RepeatClock.class) ;
+					startActivityForResult(t, 0) ;
+				}else if(position == 2){
+					 launchRingTonePicker(new Alarm()) ;
+				}
+			}
+			
+		}) ;
+	}
+	public void initTimeSelView(){
+		final WheelView hours = (WheelView) findViewById(R.id.hour);
+		hours.setAdapter(new NumericWheelAdapter(0, 23));
+		//hours.setLabel("hours");
+	
+		final WheelView mins = (WheelView) findViewById(R.id.mins);
+		mins.setAdapter(new NumericWheelAdapter(0, 59, "%02d"));
+		//mins.setLabel("mins");
+		//mins.setCyclic(true);
+		OnWheelChangedListener wheelListener = new OnWheelChangedListener() {
+			public void onChanged(WheelView wheel, int oldValue, int newValue) {
+			String	value = hours.getCurrentItem() + 87 + "."
+						+ mins.getCurrentItem();
+				;
+			//	setNumImage(String.valueOf(value), numImage);
+
+			}
+
+		};
+	
+		final WheelView hour24 = (WheelView) findViewById(R.id.hour24) ;
+		ContentResolver cv = this.getContentResolver();
+        String strTimeFormat = android.provider.Settings.System.getString(cv,
+                                           android.provider.Settings.System.TIME_12_24);
+       
+       if(strTimeFormat.equals("24"))
+       {
+        	hour24.setVisibility(View.INVISIBLE) ;
+             
+       }else{
+    	   hour24.setAdapter(new ArrayWheelAdapter<String>(new String[]{"上午","下午"})) ;
+       }
+		
+		
+	
+		// set current time
+		Calendar c = Calendar.getInstance();
+		int curHours = c.get(Calendar.HOUR_OF_DAY);
+		int curMinutes = c.get(Calendar.MINUTE);
+	
+		hours.setCurrentItem(curHours);
+		mins.setCurrentItem(curMinutes);
+	
+	
+		// add listeners
+		addChangingListener(mins, "min");
+		addChangingListener(hours, "hour");
+	
+		
+
+		hours.addChangingListener(wheelListener);
+		mins.addChangingListener(wheelListener);
+
+		OnWheelScrollListener scrollListener = new OnWheelScrollListener() {
+			public void onScrollingStarted(WheelView wheel) {
+				timeScrolled = true;
+			}
+			public void onScrollingFinished(WheelView wheel) {
+				timeScrolled = false;
+				timeChanged = true;
+				timeChanged = false;
+			}
+		};
+		
+		hours.addScrollingListener(scrollListener);
+		mins.addScrollingListener(scrollListener);
+		
+		
+	}
+
+	/**
+	 * Adds changing listener for wheel that updates the wheel label
+	 * @param wheel the wheel
+	 * @param label the wheel label
+	 */
+	private void addChangingListener(final WheelView wheel, final String label) {
+		wheel.addChangingListener(new OnWheelChangedListener() {
+			public void onChanged(WheelView wheel, int oldValue, int newValue) {
+				//wheel.setLabel(newValue != 1 ? label + "s" : label);
+				//wheel.setLabel(newValue != 1 ? label : label);
+			}
+		});
+	}
+	public void initData(){
+		for(int i = 0; i < 3; i++){
+			Map<String,String> map = new HashMap<String, String>() ;
+			if( i == 0){
+				map.put("title", "重复") ;
+				map.put("detail", "") ;
+			}else if(i == 1){
+				map.put("title", "震动") ; 
+				map.put("detail", "") ;
+			}else if(i == 2){
+				map.put("title", "铃声") ;
+				 
+				map.put("detail", sh.getString("title", "默认") ) ;
+			}
+			alarmSets.add(map) ;
+		}
+	}
+	
+	public class AlarmSetAdapter extends BaseAdapter{
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return alarmSets.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return alarmSets.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			Map<String, String> map = alarmSets.get(position) ;
+			View v = LayoutInflater.from(AlarmSet.this).inflate(R.layout.alarm_set_item, null) ;
+			if(convertView == null){
+				convertView = v ;
+			}
+			TextView mTitleText = (TextView)v.findViewById(R.id.alarm_item_title) ;
+			String title = (String) map.get("title") ;
+			mTitleText.setText(title) ;
+			
+			ImageView right = (ImageView) v.findViewById(R.id.right_dir) ;
+			
+			CheckBox repValite = (CheckBox) v.findViewById(R.id.valite) ;
+			if(position == 1){
+				right.setVisibility(View.GONE) ;
+				repValite.setVisibility(View.VISIBLE) ;
+			}
+			
+			TextView detailText = (TextView)v.findViewById(R.id.alarm_item_detail) ;
+			detailText.setText(map.get("detail")) ;
+			return convertView;
+		}
+	}
+	private void launchRingTonePicker(Alarm alarm) {
+        //mSelectedAlarm = alarm;
+       // Log.i("ringdow", "2222222222222========="+alarm);
+
+        Uri oldRingtone = alarm.alert ;
+        final Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, oldRingtone);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, false);
+        startActivityForResult(intent, 0);
+    }
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case 0:
+                   Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                   String title = getRingToneTitle(uri) ;
+                   SharedPreferences.Editor edit = sh.edit() ;
+                   edit.putString("title", title) ;
+                   edit.commit() ;
+                   break;
+                default:
+                   ;
+            }
+        }
+    }
+	private String getRingToneTitle(Uri uri) {
+        // Try the cache first
+        String title = null ;
+        if (title == null) {
+            // This is slow because a media player is created during Ringtone object creation.
+            Ringtone ringTone = RingtoneManager.getRingtone(this, uri);
+            title = ringTone.getTitle(this);
+            Toast.makeText(this, title, Toast.LENGTH_LONG).show() ;
+            if (title != null) {
+                //mRingtoneTitleCache.putString(uri.toString(), title);
+            }
+        }
+        return title;
+    }
+	private void saveRingtoneUri(Intent intent) {
+        Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+        if (uri == null) {
+           // uri = Alarm.NO_RINGTONE_URI;
+        }
+        
+        Toast.makeText(this, uri.toString(), Toast.LENGTH_LONG).show() ;
+        getRingToneTitle(uri) ;
+        /*mSelectedAlarm.alert = uri;
+
+        // Save the last selected ringtone as the default for new alarms
+        if (!Alarm.NO_RINGTONE_URI.equals(uri)) {
+            ///M: Don't set the ringtone to the system, just to the preference @{
+            //RingtoneManager.setActualDefaultRingtoneUri(
+            //        getActivity(), RingtoneManager.TYPE_ALARM, uri);
+            setDefaultRingtone(uri.toString());
+            ///@}
+            Log.v("saveRingtoneUri = " + uri.toString());
+        }
+        asyncUpdateAlarm(mSelectedAlarm, false);*/
+    }
+}

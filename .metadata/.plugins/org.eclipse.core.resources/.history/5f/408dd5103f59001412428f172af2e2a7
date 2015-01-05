@@ -1,0 +1,44 @@
+package com.example.yang;
+
+import org.cocos2d.layers.CCColorLayer;
+import org.cocos2d.layers.CCLayer;
+import org.cocos2d.layers.CCScene;
+import org.cocos2d.nodes.CCDirector;
+import org.cocos2d.opengl.CCGLSurfaceView;
+import org.cocos2d.types.ccColor3B;
+import org.cocos2d.types.ccColor4B;
+
+import android.app.Activity;
+import android.opengl.GLSurfaceView;
+import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
+
+public class MainActivity extends Activity {
+	private CCGLSurfaceView view;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE) ;
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN) ;
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) ;
+		
+		view = new CCGLSurfaceView(this) ;
+		CCDirector direct = CCDirector.sharedDirector() ;
+		direct.setDeviceOrientation(CCDirector.kCCDeviceOrientationLandscapeLeft) ;
+		direct.attachInView(view) ;
+		setContentView(view) ;
+		
+		CCDirector.sharedDirector().setDisplayFPS(true) ;
+		CCDirector.sharedDirector().setAnimationInterval(1.0f/30) ;
+		CCScene scene = CCScene.node() ;
+		CCLayer layer1 = CCLayer.node() ;
+		layer1.setContentSize(300, 200) ;
+		layer1.setPosition(10, 10) ;
+		
+		CCColorLayer colore = CCColorLayer.node(ccColor4B.ccc4(255, 0, 0, 255), 100, 100);
+		colore.setPosition(10, 10) ;
+		CCDirector.sharedDirector().runWithScene(scene) ;
+	}
+}

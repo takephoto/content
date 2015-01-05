@@ -1,0 +1,41 @@
+package com.yang.test;
+
+import android.content.Context;
+import android.media.MediaPlayer;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
+
+public class ClockAnimManager {
+	
+	private static boolean isRing  = false ;//是否响铃
+	
+	private ImageView mAlermImage = null ; //闹铃图片视图
+	
+	private Context context ;
+	
+	Animation alarmAnim = null; //闹铃动画
+	
+	MediaPlayer mePlayer = null ; 
+	
+	int rota = 10; //闹钟左右摆动的角度
+	public ClockAnimManager(Context context,ImageView mAlermImage){
+		this(context,mAlermImage,isRing) ;
+	}
+	
+	public ClockAnimManager(Context context,ImageView mAlermImage,boolean isRing){
+
+		this.context = context ;
+		this.mAlermImage = mAlermImage ;
+		createAnimation() ;
+	}
+	
+	
+	private void createAnimation(){
+		alarmAnim = new RotateAnimation(-rota,rota,0.5f,1.0f) ;
+		alarmAnim.setRepeatCount(0) ; //无限重复
+		alarmAnim.setRepeatMode(Animation.REVERSE) ; //动画翻转
+		alarmAnim.setDuration(200) ; //动画每个周期的时间
+	}
+	
+}

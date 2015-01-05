@@ -1,0 +1,36 @@
+package com.example.test;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.view.MotionEvent;
+import android.view.View;
+
+public class MyButton extends View {
+	SosButton sos ;
+	
+	public MyButton(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stu
+		sos = new SosButton(new Rect(10,10,200,80)) ;
+	}
+	
+	@Override
+	protected void onDraw(Canvas canvas) {
+		// TODO Auto-generated method stub
+		super.onDraw(canvas);
+		canvas.drawRect(sos.getFrame()) ;
+		
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		// TODO Auto-generated method stub
+		
+		return super.onTouchEvent(event);
+	}
+	
+	
+}

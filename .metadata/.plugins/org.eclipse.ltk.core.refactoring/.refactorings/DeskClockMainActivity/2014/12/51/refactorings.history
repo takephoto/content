@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;AlarmPreference.java&apos; to &apos;ActionBarTest/src/com.yang.test&apos;&#x0A;- Original project: &apos;DeskClockMainActivity&apos;&#x0A;- Destination element: &apos;ActionBarTest/src/com.yang.test&apos;&#x0A;- Original element: &apos;com.xiaoshou.osense.alarm.AlarmPreference.java&apos;" description="Copy compilation unit" destination="=ActionBarTest/src&lt;com.yang.test" element1="/src&lt;com.xiaoshou.osense.alarm{AlarmPreference.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1418747642545" units="1" version="1.0"/>
+</session>

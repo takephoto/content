@@ -1,0 +1,22 @@
+package com.yang.test;
+
+import android.content.Context;
+import android.view.animation.Animation;
+import android.widget.ImageView;
+
+public class ClockAnimManager {
+	
+	private boolean isRing  = false ;//是否响铃
+	
+	private ImageView mAlermImage = null ; //闹铃图片视图
+	
+	private Context context ;
+	
+	Animation alrmAnim ; //闹铃动画
+	public ClockAnimManager(){
+		
+	}
+	
+	
+	
+}

@@ -1,0 +1,15 @@
+package com.example.test;
+
+public class SosButton {
+	
+	
+	
+	public void touch(){
+		
+	}
+	
+	
+	public interface Listener{
+		public void click() ;
+	}
+}

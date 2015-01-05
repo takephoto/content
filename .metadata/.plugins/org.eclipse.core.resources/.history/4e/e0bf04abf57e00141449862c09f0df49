@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <RelativeLayout 
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/huise" >
+
+        <TextView
+            android:id="@+id/notes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/alarm_repeat"
+            android:textColor="@android:color/black"
+            android:textSize="26sp" />
+
+              <LinearLayout
+                  android:id="@+id/menus"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentRight="true"
+                  android:layout_centerVertical="true"
+                  android:orientation="horizontal" 
+                  >
+
+                  <ImageView
+                      android:layout_width="wrap_content"
+                      android:layout_height="52dp"
+                      android:layout_gravity="center_vertical"
+                      android:background="@drawable/btn_repeat" />
+              </LinearLayout>
+              
+              </RelativeLayout>
+               <ListView 
+                  android:layout_width="match_parent"                
+                  android:layout_height="fill_parent"
+                  android:background="#FF0000"
+                  android:layout_marginBottom="60dp"
+                  ></ListView> 
+                  <LinearLayout
+                      android:layout_width="fill_parent"
+                      android:layout_height="match_parent"
+                      android:layout_gravity="bottom"
+                      android:layout_marginBottom="0dp"
+                       >
+                  <TextView
+            android:id="@+id/alarm_save"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_clock_ok"
+            android:gravity="center"
+            android:textSize="22sp" 
+             android:textColor="@android:color/white"
+            android:text="@string/time_picker_set"
+            />
+       
+
+        <View
+            android:layout_width="1dp" 
+            android:layout_height="match_parent"
+            android:background="@color/clock_blue"
+            />
+
+        <TextView
+            android:id="@+id/alarm_delete"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_clock_no"
+            android:gravity="center"
+            android:text="@string/time_picker_cancel"
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+        </LinearLayout>
+</LinearLayout>

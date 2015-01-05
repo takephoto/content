@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Demo/res/values/attrs.xml&apos; to &apos;attr.xml&apos;" description="Rename resource &apos;attrs.xml&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="res/values/attrs.xml" name="attr.xml" stamp="1413102299774" updateReferences="true"/>
+</session>

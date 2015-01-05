@@ -1,0 +1,30 @@
+package com.example.yang;
+
+import org.cocos2d.actions.CCTimer;
+import org.cocos2d.actions.interval.CCDelayTime;
+import org.cocos2d.layers.CCLayer;
+import org.cocos2d.layers.CCScene;
+import org.cocos2d.nodes.CCDirector;
+import org.cocos2d.nodes.CCSprite;
+import org.cocos2d.types.CGSize;
+
+public class IntroLayer extends CCLayer {
+	
+	@Override
+	public void onEnter() {
+		// TODO Auto-generated method stub
+		super.onEnter();
+		
+		CGSize winSize = CCDirector.sharedDirector().winSize() ;
+		
+		CCSprite background  =  CCSprite.sprite("Image816.jpg");
+		background.setPosition(winSize.width / 2, winSize.height / 2) ;
+		
+		addChild(background) ;
+		
+		this.schedule("", 1) ;
+	}
+	public void makeTransition(CCTimer c){
+		
+	}
+}

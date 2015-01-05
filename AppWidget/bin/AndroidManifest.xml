@@ -1,0 +1,40 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.appwidget"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="21" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.yang.test.MainActivity"
+            android:configChanges="locale"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"></action>
+                <category android:name="android.intent.category.LAUNCHER"></category>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.yang.test.DialogActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
+            >
+        </activity>
+        <receiver android:name="com.yang.test.MyAppWeigate">
+            <intent-filter >
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"></action>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget01"
+                >
+            </meta-data>
+        </receiver>
+    </application>
+
+</manifest>

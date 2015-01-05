@@ -1,0 +1,26 @@
+package com.example.test;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.widget.Toast;
+
+public class MainActivity extends Activity {
+	
+	MyButton mb ;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		mb = new MyButton(this) ;
+		setContentView(mb) ;
+		
+		mb.sos.setListener(new SosButton.Listener() {
+			
+			@Override
+			public void click() {
+				// TODO Auto-generated method stub
+				Toast.makeText(MainActivity.this, "ssssssssssss", Toast.LENGTH_SHORT).show() ;
+			}
+		}) ;
+	}
+}

@@ -1,0 +1,7 @@
+package com.android.deskclock;
+
+import android.app.Activity;
+
+public class RepeatClock extends Activity{
+
+}

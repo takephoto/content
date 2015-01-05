@@ -1,0 +1,244 @@
+package com.example.yang;
+
+import org.cocos2d.actions.CCActionManager;
+import org.cocos2d.actions.base.CCAction;
+import org.cocos2d.actions.instant.CCCallFunc;
+import org.cocos2d.actions.interval.CCDelayTime;
+import org.cocos2d.actions.interval.CCFadeOut;
+import org.cocos2d.actions.interval.CCMoveBy;
+import org.cocos2d.actions.interval.CCRotateBy;
+import org.cocos2d.actions.interval.CCScaleTo;
+import org.cocos2d.actions.interval.CCSequence;
+import org.cocos2d.layers.CCLayer;
+import org.cocos2d.layers.CCScene;
+import org.cocos2d.menus.CCMenu;
+import org.cocos2d.menus.CCMenuItem;
+import org.cocos2d.menus.CCMenuItemImage;
+import org.cocos2d.nodes.CCDirector;
+import org.cocos2d.nodes.CCLabel;
+import org.cocos2d.nodes.CCNode;
+import org.cocos2d.nodes.CCSprite;
+import org.cocos2d.opengl.CCGLSurfaceView;
+import org.cocos2d.opengl.CCTextureAtlas;
+import org.cocos2d.types.CGPoint;
+import org.cocos2d.types.CGSize;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
+
+public class TestActivity extends Activity {
+	
+	CCGLSurfaceView view ;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		view = new CCGLSurfaceView(this) ;
+		requestWindowFeature(Window.FEATURE_NO_TITLE) ;
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN) ;
+		setContentView(view) ;
+		CCDirector direct = CCDirector.sharedDirector() ;
+		direct.setDeviceOrientation(CCDirector.kCCDeviceOrientationLandscapeLeft) ;
+		direct.setAnimationInterval(1.0/60) ;
+		direct.attachInView(view) ;
+		
+		CCScene scene = CCScene.node() ;
+		scene.addChild(nextAction()) ;
+		
+		CCDirector.sharedDirector().setDisplayFPS(true) ;
+		
+		CCDirector.sharedDirector().runWithScene(scene) ;
+	}
+	static int sceneIdx = - 1 ;
+	
+	static Class<?> transitions[] = {
+		CrashTest.class ,
+		LogicTest.class
+	} ;
+	
+	static CCLayer backAction(){
+		sceneIdx-- ;
+		int total = transitions.length ;
+		
+		if(sceneIdx < 0){
+			sceneIdx+=total ;
+		}
+		return restartAction() ;
+	}
+	static CCLayer nextAction(){
+		sceneIdx++ ;
+		
+		sceneIdx = sceneIdx % transitions.length ;
+		return restartAction() ;
+	}
+	static CCLayer restartAction(){
+		try{
+			Class<?> c = transitions[sceneIdx] ;
+			return (CCLayer)c.newInstance() ;
+		}catch(Exception e){
+			return null ;
+		}
+	}
+	static abstract class ActionManagerDemo extends CCLayer{
+		CCTextureAtlas atlas ;
+		public ActionManagerDemo(){
+			CGSize s = CCDirector.sharedDirector().winSize() ;
+			
+			CCLabel label = CCLabel.makeLabel(title(), "DroidSans", 32) ;
+			addChild(label, 1) ;
+			label.setPosition(CGPoint.ccp(s.width / 2, s.height/2 - 50)) ;
+			String subTitle = subTitle() ;
+			
+			if(subTitle != null){
+				CCLabel l = CCLabel.makeLabel(subTitle, "DroidSerif", 16) ;
+				addChild(l,1) ;
+				l.setPosition(CGPoint.ccp(s.width / 2, s.height / 2 - 80)) ;
+			}
+			
+			CCMenuItemImage item1 = CCMenuItemImage.item("b1.png", "b2.png", this, "backCallback") ;
+			CCMenuItemImage item2 = CCMenuItemImage.item("r1.png", "r2.png", this, "restartCallback") ;
+			CCMenuItemImage item3 = CCMenuItemImage.item("f1.png", "f2.png", this, "nextCallback") ;
+			CCMenu menu = CCMenu.menu(item1,item2,item3) ;
+			
+			menu.setPosition(0, 0) ;
+			item1.setPosition(CGPoint.make(s.width/2 - 100, 30)) ;
+			item2.setPosition(CGPoint.make(s.width/2 , 30)) ;
+			item3.setPosition(CGPoint.make(s.width/2+100, 30)) ;
+			addChild(menu,1) ;
+			
+		}
+		public void backCallback(Object sender){
+			CCScene s = CCScene.node() ;
+			s.addChild(backAction()) ;
+			CCDirector.sharedDirector().replaceScene(s) ;
+		}
+		public void nextCallback(Object sender){
+			CCScene s = CCScene.node() ;
+			s.addChild(nextAction()) ;
+			CCDirector.sharedDirector().replaceScene(s) ;
+		}
+		public void restartCallback(Object sender){
+			CCScene s = CCScene.node() ;
+			s.addChild(restartAction()) ;
+			CCDirector.sharedDirector().replaceScene(s) ;
+		}
+		
+		public String title(){
+			return "NO Title" ;
+		}
+		public String subTitle(){
+			return null ;
+		}
+	}
+	static class CrashTest extends ActionManagerDemo{
+		public CrashTest(){
+			CCSprite sprite = CCSprite.sprite("grossini.png") ;
+			sprite.setPosition(CGPoint.ccp(200, 200)) ;
+			addChild(sprite,1) ;
+			sprite.runAction(CCRotateBy.action(1.4f, 90)) ;
+			sprite.runAction(CCSequence.actions(CCDelayTime.action(1.4f), CCFadeOut.action(1.1f))) ;
+			this.runAction(CCSequence.actions(CCDelayTime.action(1.4f), CCCallFunc.action(this, "removeThis"))) ;
+		}
+		public void removeThis(){
+			this.getParent().removeChild(this, true) ;
+			this.nextCallback(null) ;
+		}
+		@Override
+		public String title() {
+			// TODO Auto-generated method stub
+			return "Test 1. should not crash";
+		}
+	}
+	
+	
+	static class LogicTest extends ActionManagerDemo{
+		public LogicTest(){
+			CCSprite s = CCSprite.sprite("grossini.png") ;
+			addChild(s) ;
+			s.setPosition(CGPoint.ccp(200, 200)) ;
+			s.runAction(CCSequence.actions(CCMoveBy.action(1, CGPoint.ccp(100, 0)), CCCallFunc.action(this, "buyMe"))) ;
+			
+		}
+		
+		public void buyMe(CCNode node){
+			node.stopAllActions() ;
+			node.runAction(CCScaleTo.action(2.0f, 2.0f)) ;
+		}
+		
+		@Override
+		public String title() {
+			// TODO Auto-generated method stub
+			return "Logic test";
+		}
+	}
+	public static final int kTagGrossini = 1 ;
+	static class PauseTest extends ActionManagerDemo{
+		public PauseTest(){
+			super() ;
+		}
+		
+		@Override
+		public void onEnter() {
+			// TODO Auto-generated method stub
+			super.onEnter();
+			
+			CCSprite s = CCSprite.sprite("grossini.png") ;
+			s.setPosition(CGPoint.ccp(200, 200)) ;
+			addChild(s, 0, kTagGrossini) ;
+			CCAction action = CCMoveBy.action(1.5f, CGPoint.ccp(150, 0)) ;
+			CCActionManager.sharedManager().addAction(action, this, true) ;
+			this.schedule("unpause",3) ;
+		}
+		
+		public void unpause(){
+			
+		}
+		
+		@Override
+		public String title() {
+			// TODO Auto-generated method stub
+			return "Pause test";
+		}
+		
+	}
+	
+	@Override
+ 	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+	}
+	
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		CCDirector.sharedDirector().onPause() ;
+	}
+	@Override
+	protected void onRestart() {
+		// TODO Auto-generated method stub
+		super.onRestart();
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		CCDirector.sharedDirector().onResume() ;
+	}
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		CCDirector.sharedDirector().end() ;
+	}
+	
+}
