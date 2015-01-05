@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="44dp"
+    android:background="@drawable/huise"
+    android:gravity="center_vertical"
+    
+    android:orientation="horizontal" >
+ 
+    <Button
+        android:id="@+id/btn_left"
+        android:layout_width="40dp"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="-2dp"
+        android:background="@drawable/back_state"
+         />
+ 
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        
+        android:gravity="center"
+        android:singleLine="true"
+       	android:layout_gravity="center_horizontal|center_vertical"
+       	
+        android:text="标题"
+        android:textStyle="bold"
+        
+        android:layout_weight="1"
+        android:textSize="9pt"
+        android:textColor="@android:color/black" />
+ 
+    <Button
+        android:id="@+id/btn_right"
+        android:layout_width="40dp"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="-2dp"
+        
+       	android:layout_gravity="center_vertical"
+        android:background="@drawable/menu_state"
+         />
+ 
+</LinearLayout>

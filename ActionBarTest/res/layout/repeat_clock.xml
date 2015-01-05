@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     >
+    
+    <RelativeLayout 
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/huise" >
+
+        <TextView
+            android:id="@+id/notes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="重复"
+            android:textColor="@android:color/black"
+            android:textSize="26sp" />
+
+              <LinearLayout
+                  android:id="@+id/menus"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentRight="true"
+                  android:layout_centerVertical="true"
+                  android:orientation="horizontal" 
+                  >
+
+                  <CheckBox
+                      
+                      android:id="@+id/all_select_repeat"           
+                      android:layout_width="wrap_content"
+                      android:layout_height="52dp"
+                      android:layout_gravity="center_vertical"
+                      style="@style/CustomCheckboxTheme" />
+              </LinearLayout>
+                             
+               
+              </RelativeLayout>
+              <ListView 
+                  android:id="@+id/listviewrepeat"
+                  android:layout_width="match_parent"                
+                  android:layout_height="fill_parent"
+                  android:layout_below="@+id/title"
+                  android:layout_above="@+id/repeat_bottom"
+                  
+                  ></ListView> 
+                <LinearLayout
+                    android:id="@+id/repeat_bottom"
+                      android:layout_width="fill_parent"
+                      android:layout_height="60dp"
+                      android:layout_alignParentBottom="true"
+                      
+                      
+                       >
+                  <TextView
+            android:id="@+id/alarm_save"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_clock_ok"
+            android:gravity="center"
+            android:textSize="22sp" 
+             android:textColor="@android:color/white"
+            android:text="确定"
+            />
+       
+
+
+        <TextView
+            android:id="@+id/alarm_delete"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_clock_put_off"
+            android:gravity="center"
+            android:text="取消"
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+        </LinearLayout> 
+</RelativeLayout>
